@@ -1,11 +1,14 @@
 package com.happyheng.androidlinkedscrolllayout.layout;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.happyheng.androidlinkedscrolllayout.layout.adapter.LinkedScrollAdapter;
@@ -24,9 +27,15 @@ public class LinkedScrollLayout extends LinearLayout {
     //此Layout所需的Adapter
     private LinkedScrollAdapter mAdapter;
 
-
     //分别为 判断是否为touch的最小距离，和是否为每一次touch的最小距离
     private int mFirstTouchSlop, mTouchSlop;
+
+    //监听滑动速度的对象
+    private VelocityTracker mVelocityTracker;
+    //上下最好滑动的距离
+    private int mMinVelocityScrollHeight;
+    //滑动的ValueAnimator
+    private ValueAnimator mValueAnimator;
 
 
     public LinkedScrollLayout(Context context, AttributeSet attrs) {
@@ -41,6 +50,11 @@ public class LinkedScrollLayout extends LinearLayout {
 
         mFirstTouchSlop = DensityUtils.dp2px(context, 5.0f);
         mTouchSlop = DensityUtils.dp2px(context, 1.5f);
+
+        //初始化
+        mVelocityTracker = VelocityTracker.obtain();
+        //最小为24dp，即差不多为屏幕的二十分之一
+        mMinVelocityScrollHeight = DensityUtils.dp2px(context, 24.0f);
 
     }
 
@@ -79,6 +93,12 @@ public class LinkedScrollLayout extends LinearLayout {
 
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+
+                    //如果此时正在执行动画，停止动画，防止冲突
+                    if (mValueAnimator != null && mValueAnimator.isRunning()) {
+                        mValueAnimator.cancel();
+                    }
+
 
                     mMoveX = ev.getX();
                     mMoveY = ev.getY();
@@ -138,6 +158,8 @@ public class LinkedScrollLayout extends LinearLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
+        //添加至滑动监听
+        mVelocityTracker.addMovement(event);
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -160,10 +182,64 @@ public class LinkedScrollLayout extends LinearLayout {
                 break;
             case MotionEvent.ACTION_UP:
 
+                //判断当ev事件是MotionEvent.ACTION_UP时：计算速率
+                final VelocityTracker velocityTracker = mVelocityTracker;
+                velocityTracker.computeCurrentVelocity(300);
+                float yVelocity = velocityTracker.getYVelocity();
+                //如果小于最小的滑动距离
+                if (Math.abs(yVelocity) < mMinVelocityScrollHeight) {
+                    break;
+                }
+                beginAnimation(velocityTracker.getYVelocity());
                 break;
+
         }
         return true;
     }
+
+    /**
+     * 开始动画的方法，使TitleView有滑动后缓慢停止的效果
+     *
+     * @param yVelocity
+     */
+    private void beginAnimation(float yVelocity) {
+
+        initAnimator(yVelocity);
+        mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+
+                Float value = (Float) animation.getAnimatedValue();
+                setTitleViewTop(value.intValue());
+            }
+        });
+
+        mValueAnimator.start();
+    }
+
+    /**
+     * 初始化Animator的方法，注意，此方法会根据最后得到的值来判断，如果超出了临界值，使其最后停在临界值上
+     *
+     * @param yVelocity Y轴移动的向量
+     */
+    private void initAnimator(float yVelocity) {
+        float oldTitleTop = mTitleView.getTop();
+
+        //进行判断，如果滑动超过限定值，使其等于限定值
+        float resultTitleTop = oldTitleTop + yVelocity;
+        if (resultTitleTop > 0) {
+            resultTitleTop = 0;
+        } else if (resultTitleTop < -mTitleViewHeight) {
+            resultTitleTop = -mTitleViewHeight;
+        }
+
+        mValueAnimator = ValueAnimator.ofFloat(oldTitleTop, resultTitleTop);
+        mValueAnimator.setDuration(300);
+        //设置缓慢减速的插值器
+        mValueAnimator.setInterpolator(new DecelerateInterpolator());
+
+    }
+
 
     /**
      * 设置TitileView顶部Top的方法,此方法会判断是否合法

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <module external.linked.project.id=":app" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="LinkedScrollLayout" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+=======
+<module external.linked.project.id=":app" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="AndroidLinkedScrollLayout" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+>>>>>>> 279977c7cebf9a70488a23d81cad52a3e3c83383
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>

@@ -1,14 +1,21 @@
 package com.happyheng.androidlinkedscrolllayout.layout;
 
+<<<<<<< HEAD
 import android.animation.ValueAnimator;
+=======
+>>>>>>> 279977c7cebf9a70488a23d81cad52a3e3c83383
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+<<<<<<< HEAD
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+=======
+import android.view.View;
+>>>>>>> 279977c7cebf9a70488a23d81cad52a3e3c83383
 import android.widget.LinearLayout;
 
 import com.happyheng.androidlinkedscrolllayout.layout.adapter.LinkedScrollAdapter;
@@ -27,6 +34,7 @@ public class LinkedScrollLayout extends LinearLayout {
     //此Layout所需的Adapter
     private LinkedScrollAdapter mAdapter;
 
+<<<<<<< HEAD
     //分别为 判断是否为touch的最小距离，和是否为每一次touch的最小距离
     private int mFirstTouchSlop, mTouchSlop;
 
@@ -37,6 +45,12 @@ public class LinkedScrollLayout extends LinearLayout {
     //滑动的ValueAnimator
     private ValueAnimator mValueAnimator;
 
+=======
+
+    //分别为 判断是否为touch的最小距离，和是否为每一次touch的最小距离
+    private int mFirstTouchSlop, mTouchSlop;
+
+>>>>>>> 279977c7cebf9a70488a23d81cad52a3e3c83383
 
     public LinkedScrollLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -51,11 +65,14 @@ public class LinkedScrollLayout extends LinearLayout {
         mFirstTouchSlop = DensityUtils.dp2px(context, 5.0f);
         mTouchSlop = DensityUtils.dp2px(context, 1.5f);
 
+<<<<<<< HEAD
         //初始化
         mVelocityTracker = VelocityTracker.obtain();
         //最小为24dp，即差不多为屏幕的二十分之一
         mMinVelocityScrollHeight = DensityUtils.dp2px(context, 24.0f);
 
+=======
+>>>>>>> 279977c7cebf9a70488a23d81cad52a3e3c83383
     }
 
     public void setAdapter(LinkedScrollAdapter adapter) {
@@ -94,12 +111,15 @@ public class LinkedScrollLayout extends LinearLayout {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
 
+<<<<<<< HEAD
                     //如果此时正在执行动画，停止动画，防止冲突
                     if (mValueAnimator != null && mValueAnimator.isRunning()) {
                         mValueAnimator.cancel();
                     }
 
 
+=======
+>>>>>>> 279977c7cebf9a70488a23d81cad52a3e3c83383
                     mMoveX = ev.getX();
                     mMoveY = ev.getY();
                     mIsIntercept = false;
@@ -158,8 +178,11 @@ public class LinkedScrollLayout extends LinearLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
+<<<<<<< HEAD
         //添加至滑动监听
         mVelocityTracker.addMovement(event);
+=======
+>>>>>>> 279977c7cebf9a70488a23d81cad52a3e3c83383
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -182,6 +205,7 @@ public class LinkedScrollLayout extends LinearLayout {
                 break;
             case MotionEvent.ACTION_UP:
 
+<<<<<<< HEAD
                 //判断当ev事件是MotionEvent.ACTION_UP时：计算速率
                 final VelocityTracker velocityTracker = mVelocityTracker;
                 velocityTracker.computeCurrentVelocity(300);
@@ -193,11 +217,15 @@ public class LinkedScrollLayout extends LinearLayout {
                 beginAnimation(velocityTracker.getYVelocity());
                 break;
 
+=======
+                break;
+>>>>>>> 279977c7cebf9a70488a23d81cad52a3e3c83383
         }
         return true;
     }
 
     /**
+<<<<<<< HEAD
      * 开始动画的方法，使TitleView有滑动后缓慢停止的效果
      *
      * @param yVelocity
@@ -242,6 +270,8 @@ public class LinkedScrollLayout extends LinearLayout {
 
 
     /**
+=======
+>>>>>>> 279977c7cebf9a70488a23d81cad52a3e3c83383
      * 设置TitileView顶部Top的方法,此方法会判断是否合法
      *
      * @param titleTop TitleView的topMargin
